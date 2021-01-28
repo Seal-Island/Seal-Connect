@@ -28,7 +28,7 @@ public class CommandListener extends ListenerAdapter {
                         if(cmd.canUseCommand(event.getMember())) {
                             cmd.execute(event.getMessage());
                         } else {
-                            event.getChannel().sendMessage(new EmbedBuilder()
+                            event.getMessage().reply(new EmbedBuilder()
                                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.error.title")))
                                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.error.description")))
                                     .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))

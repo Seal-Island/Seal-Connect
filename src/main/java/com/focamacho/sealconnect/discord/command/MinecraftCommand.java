@@ -32,7 +32,7 @@ public class MinecraftCommand extends Command {
             Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromAny(args[0].replace("<@!", "").replace(">", ""));
 
             if(connectedAccount == null) {
-                message.getChannel().sendMessage(new EmbedBuilder()
+                message.reply(new EmbedBuilder()
                         .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.minecraft")))
                         .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.noaccount")))
                         .setColor(SealConnect.config.color)
@@ -41,7 +41,7 @@ public class MinecraftCommand extends Command {
                 return;
             }
 
-            message.getChannel().sendMessage(getProfileMessage(message.getGuild(), connectedAccount)).queue();
+            message.reply(getProfileMessage(message.getGuild(), connectedAccount)).queue();
             return;
         }
 
@@ -52,7 +52,7 @@ public class MinecraftCommand extends Command {
             return;
         }
 
-        message.getChannel().sendMessage(getProfileMessage(message.getGuild(), connectedAccount)).queue();
+        message.reply(getProfileMessage(message.getGuild(), connectedAccount)).queue();
     }
 
     public static MessageEmbed getProfileMessage(Guild guild, Map.Entry<UUID, String> connectedAccount) {

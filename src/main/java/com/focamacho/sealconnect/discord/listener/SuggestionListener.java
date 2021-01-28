@@ -41,10 +41,14 @@ public class SuggestionListener extends ListenerAdapter {
                     );
                 }
             } else {
-                if(event.getReactionEmote().getEmote().equals(Emojis.animatedCheckmark)) {
+                if(Emojis.animatedCheckmark != null && event.getReactionEmote().getEmote().equals(Emojis.animatedCheckmark)) {
                     event.retrieveMessage().queue(msg -> msg.removeReaction(Emojis.animatedCross, event.getUser()).queue());
-                } else if(event.getReactionEmote().getEmote().equals(Emojis.animatedCross)) {
+                } else if(Emojis.animatedCross != null && event.getReactionEmote().getEmote().equals(Emojis.animatedCross)) {
                     event.retrieveMessage().queue(msg -> msg.removeReaction(Emojis.animatedCheckmark, event.getUser()).queue());
+                } else if(event.getReactionEmote().getEmoji().equalsIgnoreCase("✅")) {
+                    event.retrieveMessage().queue(msg -> msg.removeReaction("✅", event.getUser()).queue());
+                } else if(event.getReactionEmote().getEmoji().equalsIgnoreCase("❌")) {
+                    event.retrieveMessage().queue(msg -> msg.removeReaction("❌", event.getUser()).queue());
                 }
             }
         }

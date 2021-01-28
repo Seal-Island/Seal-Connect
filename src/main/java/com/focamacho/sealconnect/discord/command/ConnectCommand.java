@@ -29,7 +29,7 @@ public class ConnectCommand extends Command {
         }
 
         if(args.length != 1) {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.help")))
                     .setColor(SealConnect.config.color)
@@ -52,14 +52,14 @@ public class ConnectCommand extends Command {
             String description = player != null ? TextUtils.getString(SealConnectLang.getLang("discord.connected.description"), player) : TextUtils.getString(SealConnectLang.getLang("discord.connected.description"));
             String thumb = player != null ? TextUtils.getString(SealConnect.config.successfulImage, player) : TextUtils.getString(SealConnect.config.successfulImage);
 
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(description)
                     .setColor(SealConnect.config.color)
                     .setThumbnail(thumb)
                     .build()).queue();
         } else {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.wrongkey")))
                     .setColor(SealConnect.config.color)

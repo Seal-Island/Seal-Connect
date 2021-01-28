@@ -28,7 +28,7 @@ public class SuggestCommand extends Command {
         Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
 
         if(connectedAccount == null) {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.notconnected")))
                     .setColor(SealConnect.config.color)
@@ -38,7 +38,7 @@ public class SuggestCommand extends Command {
         }
 
         if(args.length < 1) {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.missing")))
                     .setColor(SealConnect.config.color)
@@ -54,7 +54,7 @@ public class SuggestCommand extends Command {
         }
 
         message.getGuild().getTextChannelById(SealConnect.config.suggestionsChannel).sendMessage(getSuggestionMessage(message.getGuild(), connectedAccount, suggestion.toString())).queue(msg -> {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.success")))
                     .setColor(SealConnect.config.color)

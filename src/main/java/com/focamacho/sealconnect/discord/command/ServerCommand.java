@@ -25,7 +25,7 @@ public class ServerCommand extends Command {
     public void execute(Message message) {
         Guild guild = message.getGuild();
 
-        message.getChannel().sendMessage(new EmbedBuilder()
+        message.reply(new EmbedBuilder()
                 .setAuthor(guild.getName(), null, guild.getIconUrl())
                 .setThumbnail(guild.getIconUrl())
                 .setColor(SealConnect.config.color)

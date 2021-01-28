@@ -22,7 +22,7 @@ public class DescriptionCommand extends Command {
         Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
 
         if(connectedAccount == null) {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.notconnected")))
                     .setColor(SealConnect.config.color)
@@ -39,7 +39,7 @@ public class DescriptionCommand extends Command {
         String description = stringBuilder.toString();
 
         if(description.length() > 180) {
-            message.getChannel().sendMessage(new EmbedBuilder()
+            message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.description.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.description.description")))
                     .setColor(SealConnect.config.color)
@@ -49,7 +49,7 @@ public class DescriptionCommand extends Command {
         }
 
         DataHandler.getProfileData(message.getAuthor().getId()).setDescription(description);
-        message.getChannel().sendMessage(MinecraftCommand.getProfileMessage(message.getGuild(), connectedAccount)).queue();
+        message.reply(MinecraftCommand.getProfileMessage(message.getGuild(), connectedAccount)).queue();
     }
 
 }

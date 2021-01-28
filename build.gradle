@@ -29,7 +29,7 @@ dependencies {
     compileOnly group: 'org.json', name: 'json', version: '20200518'
     compileOnly group: 'commons-io', name: 'commons-io', version: '2.7'
 
-    compile ('net.dv8tion:JDA:4.2.0_214') {
+    compile ('net.dv8tion:JDA:4.2.0_227') {
         exclude module: 'opus-java'
     }
 
