@@ -38,8 +38,6 @@ public class DiscordSealConnect {
     }
 
     public static void updateRoles(ProxiedPlayer player) {
-        if(player.hasPermission("*")) return;
-
         Guild guild = SealConnect.config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(SealConnect.config.guildId);
 
         if(guild == null) return;
