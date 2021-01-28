@@ -46,7 +46,7 @@ public final class SealConnect extends Plugin {
 
     @Override
     public void onDisable() {
-        DataHandler.save();
+        if(!config.botToken.isEmpty()) DataHandler.save();
     }
 
 }
