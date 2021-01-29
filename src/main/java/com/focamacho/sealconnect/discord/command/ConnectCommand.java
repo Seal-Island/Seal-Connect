@@ -13,6 +13,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class ConnectCommand extends Command {
 
     public ConnectCommand(String... aliases) {
@@ -32,8 +34,8 @@ public class ConnectCommand extends Command {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.help")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
             return;
         }
@@ -50,20 +52,20 @@ public class ConnectCommand extends Command {
 
             String title = player != null ? TextUtils.getString(SealConnectLang.getLang("discord.connect.title"), player) : TextUtils.getString(SealConnectLang.getLang("discord.connect.title"));
             String description = player != null ? TextUtils.getString(SealConnectLang.getLang("discord.connected.description"), player) : TextUtils.getString(SealConnectLang.getLang("discord.connected.description"));
-            String thumb = player != null ? TextUtils.getString(SealConnect.config.successfulImage, player) : TextUtils.getString(SealConnect.config.successfulImage);
+            String thumb = player != null ? TextUtils.getString(config.successfulImage, player) : TextUtils.getString(config.successfulImage);
 
             message.reply(new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(description)
-                    .setColor(SealConnect.config.color)
+                    .setColor(config.color)
                     .setThumbnail(thumb)
                     .build()).queue();
         } else {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.wrongkey")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
         }
     }

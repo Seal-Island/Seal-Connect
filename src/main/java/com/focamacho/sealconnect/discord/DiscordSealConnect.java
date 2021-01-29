@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class DiscordSealConnect {
 
     public static JDA jda;
@@ -21,7 +23,7 @@ public class DiscordSealConnect {
     public static void init() {
         SealConnect.logger.info("Tentando conexão com o bot...");
         try {
-            jda = JDABuilder.createDefault(SealConnect.config.botToken).addEventListeners(new CommandListener(), new SuggestionListener()).build();
+            jda = JDABuilder.createDefault(config.botToken).addEventListeners(new CommandListener(), new SuggestionListener()).build();
             SealConnect.logger.info("Conexão com o bot concluída com sucesso!");
         } catch(Exception e) {
             SealConnect.logger.severe("Um erro ocorreu ao tentar se conectar ao bot.");
@@ -29,26 +31,26 @@ public class DiscordSealConnect {
             return;
         }
 
-        jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.DEFAULT, SealConnect.config.activityPresence));
+        jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.DEFAULT, config.activityPresence));
 
-        new ConnectCommand(SealConnect.config.connectAliases);
-        new MinecraftCommand(SealConnect.config.minecraftAliases);
-        new DescriptionCommand(SealConnect.config.descriptionAliases);
-        new ServerCommand(SealConnect.config.serverAliases);
-        new SuggestCommand(SealConnect.config.suggestAliases);
+        new ConnectCommand(config.connectAliases);
+        new MinecraftCommand(config.minecraftAliases);
+        new DescriptionCommand(config.descriptionAliases);
+        new ServerCommand(config.serverAliases);
+        new SuggestCommand(config.suggestAliases);
     }
 
     public static void updateRoles(ProxiedPlayer player) {
         if(PermissionUtils.hasPermission(player.getUniqueId(), "*")) return;
 
-        Guild guild = SealConnect.config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(SealConnect.config.guildId);
+        Guild guild = config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(config.guildId);
 
         if(guild == null) return;
 
         if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
-            if(!SealConnect.config.nitroRoleName.isEmpty() || SealConnect.config.linkedRoles.size() > 0) {
+            if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
                 guild.retrieveMemberById(DataHandler.connectedAccounts.get(player.getUniqueId())).queue(member -> {
-                    SealConnect.config.linkedRoles.forEach((perm, role) -> {
+                    config.linkedRoles.forEach((perm, role) -> {
                         Role rl = guild.getRoleById(role);
                         if (rl == null) return;
 
@@ -59,11 +61,11 @@ public class DiscordSealConnect {
                         }
                     });
 
-                    if(!SealConnect.config.nitroRoleName.isEmpty()) {
+                    if(!config.nitroRoleName.isEmpty()) {
                         if(member.getTimeBoosted() != null) {
-                            PermissionUtils.addGroup(player.getUniqueId(), SealConnect.config.nitroRoleName);
+                            PermissionUtils.addGroup(player.getUniqueId(), config.nitroRoleName);
                         } else {
-                            PermissionUtils.removeGroup(player.getUniqueId(), SealConnect.config.nitroRoleName);
+                            PermissionUtils.removeGroup(player.getUniqueId(), config.nitroRoleName);
                         }
                     }
                 }, ignored -> {});

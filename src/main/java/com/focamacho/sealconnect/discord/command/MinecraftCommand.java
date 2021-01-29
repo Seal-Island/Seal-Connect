@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class MinecraftCommand extends Command {
 
     public MinecraftCommand(String... aliases) {
@@ -33,8 +35,8 @@ public class MinecraftCommand extends Command {
                 message.reply(new EmbedBuilder()
                         .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.minecraft")))
                         .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.noaccount")))
-                        .setColor(SealConnect.config.color)
-                        .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                        .setColor(config.color)
+                        .setThumbnail(TextUtils.getString(config.erroredImage))
                         .build()).queue();
                 return;
             }
@@ -77,11 +79,11 @@ public class MinecraftCommand extends Command {
             }
 
             boolean original = JsonHandler.readJsonFromURL("https://sessionserver.mojang.com/session/minecraft/profile/" + connectedAccount.getKey().toString().replace("-", "")).has("id");
-            int color = SealConnect.config.color;
+            int color = config.color;
 
             Member member = guild.retrieveMemberById(connectedAccount.getValue()).complete();
             if (member != null) {
-                if (SealConnect.config.minecraftColorId.isEmpty() || member.getRoles().contains(guild.getRoleById(SealConnect.config.minecraftColorId))) color = member.getColorRaw();
+                if (config.minecraftColorId.isEmpty() || member.getRoles().contains(guild.getRoleById(config.minecraftColorId))) color = member.getColorRaw();
             }
 
             return new EmbedBuilder()

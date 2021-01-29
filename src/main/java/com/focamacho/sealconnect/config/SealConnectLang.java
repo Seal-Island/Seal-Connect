@@ -7,11 +7,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class SealConnectLang implements ILangConfig {
 
     @Override
     public String getDefaultLang() {
-        return SealConnect.config.language;
+        return config.language;
     }
 
     @Override

@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class ServerCommand extends Command {
 
     public ServerCommand(String... aliases) {
@@ -28,7 +30,7 @@ public class ServerCommand extends Command {
         message.reply(new EmbedBuilder()
                 .setAuthor(guild.getName(), null, guild.getIconUrl())
                 .setThumbnail(guild.getIconUrl())
-                .setColor(SealConnect.config.color)
+                .setColor(config.color)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.server.players")), "" + DataHandler.savedNames.size(), true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.server.connected")), "" + DataHandler.connectedAccounts.size(), true)
                 .build()).queue();

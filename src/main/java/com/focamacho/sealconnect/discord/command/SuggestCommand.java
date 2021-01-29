@@ -14,6 +14,8 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class SuggestCommand extends Command {
 
     public SuggestCommand(String... aliases) {
@@ -22,7 +24,7 @@ public class SuggestCommand extends Command {
 
     @Override
     public void execute(Message message) {
-        if(SealConnect.config.suggestionsChannel.isEmpty()) return;
+        if(config.suggestionsChannel.isEmpty()) return;
 
         String[] args = getArgs(message);
         Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
@@ -31,8 +33,8 @@ public class SuggestCommand extends Command {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.notconnected")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
             return;
         }
@@ -41,8 +43,8 @@ public class SuggestCommand extends Command {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.missing")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
             return;
         }
@@ -53,12 +55,12 @@ public class SuggestCommand extends Command {
             if(i < args.length - 1) suggestion.append(" ");
         }
 
-        message.getGuild().getTextChannelById(SealConnect.config.suggestionsChannel).sendMessage(getSuggestionMessage(message.getGuild(), connectedAccount, suggestion.toString())).queue(msg -> {
+        message.getGuild().getTextChannelById(config.suggestionsChannel).sendMessage(getSuggestionMessage(message.getGuild(), connectedAccount, suggestion.toString())).queue(msg -> {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.success")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.successfulImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.successfulImage))
                     .build()).queue();
 
             if(Emojis.animatedCheckmark == null) msg.addReaction("✅").queue();
@@ -77,7 +79,7 @@ public class SuggestCommand extends Command {
                 .setThumbnail("https://minotar.net/helm/" + nick + "/100.png")
                 .setFooter(guild.getName(), guild.getIconUrl())
                 .setTimestamp(OffsetDateTime.now())
-                .setColor(SealConnect.config.color)
+                .setColor(config.color)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.suggestedby")), "<@!" + connectedAccount.getValue() + ">", true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.servernick")), nick, true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.suggestion")), suggestion, false)

@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class CommandListener extends ListenerAdapter {
 
     @Override
@@ -18,7 +20,7 @@ public class CommandListener extends ListenerAdapter {
 
         String message = event.getMessage().getContentRaw();
 
-        if(message.startsWith(SealConnect.config.botPrefix)) {
+        if(message.startsWith(config.botPrefix)) {
             String comando = message.split(" ")[0].substring(1);
 
             comando:
@@ -31,7 +33,7 @@ public class CommandListener extends ListenerAdapter {
                             event.getMessage().reply(new EmbedBuilder()
                                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.error.title")))
                                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.error.description")))
-                                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                                    .setThumbnail(TextUtils.getString(config.erroredImage))
                                     .build()).queue();
                         }
                         break comando;

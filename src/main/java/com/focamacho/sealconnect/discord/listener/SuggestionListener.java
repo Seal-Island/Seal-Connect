@@ -15,16 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class SuggestionListener extends ListenerAdapter {
 
     public static List<String> alreadyWarned = new ArrayList<>();
 
     @Override
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-        if(SealConnect.config.suggestionsChannel.isEmpty()) return;
+        if(config.suggestionsChannel.isEmpty()) return;
         if(event.getUser().isBot()) return;
 
-        if(SealConnect.config.suggestionsRequireConnect && event.getChannel().getId().equalsIgnoreCase(SealConnect.config.suggestionsChannel)) {
+        if(config.suggestionsRequireConnect && event.getChannel().getId().equalsIgnoreCase(config.suggestionsChannel)) {
             if(DataHandler.getConnectedAccountFromDiscordID(event.getUserId()) == null){
                 event.getReaction().removeReaction(event.getUser()).queue();
                 if(!alreadyWarned.contains(event.getUserId())) {
@@ -32,8 +34,8 @@ public class SuggestionListener extends ListenerAdapter {
                     event.getChannel().sendMessage(new MessageBuilder().setContent(event.getUser().getAsMention()).setEmbed(new EmbedBuilder()
                             .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                             .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.notconnected")))
-                            .setColor(SealConnect.config.color)
-                            .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                            .setColor(config.color)
+                            .setThumbnail(TextUtils.getString(config.erroredImage))
                             .build())
                             .build()).queue(
                             msg -> SealConnect.scheduler.schedule(() ->

@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.Message;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class DescriptionCommand extends Command {
 
     public DescriptionCommand(String... aliases) {
@@ -25,8 +27,8 @@ public class DescriptionCommand extends Command {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.notconnected")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
             return;
         }
@@ -42,8 +44,8 @@ public class DescriptionCommand extends Command {
             message.reply(new EmbedBuilder()
                     .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.description.title")))
                     .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.description.description")))
-                    .setColor(SealConnect.config.color)
-                    .setThumbnail(TextUtils.getString(SealConnect.config.erroredImage))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
                     .build()).queue();
             return;
         }

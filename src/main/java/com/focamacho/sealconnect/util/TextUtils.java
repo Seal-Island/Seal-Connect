@@ -1,6 +1,5 @@
 package com.focamacho.sealconnect.util;
 
-import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -9,13 +8,15 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 public class TextUtils {
 
     public static void sendMessage(CommandSender sender, String message) {
         for (String s : message.split("\n")) {
             TextComponent component = getText(SealConnectLang.getLang("minecraft.prefix") + s);
             if(s.contains("%discord%")) {
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, SealConnect.config.discordUrl));
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, config.discordUrl));
                 component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{getText("minecraft.discord.connect")}));
             }
             sender.sendMessage(component);
@@ -26,7 +27,7 @@ public class TextUtils {
         for (String s : message.split("\n")) {
             TextComponent component = getText(SealConnectLang.getLang("minecraft.prefix") + s, player);
             if(s.contains("%discord%")) {
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, SealConnect.config.discordUrl));
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, config.discordUrl));
                 component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{getText(SealConnectLang.getLang("minecraft.discord.connect"), player)}));
             }
             sender.sendMessage(component);
@@ -43,9 +44,9 @@ public class TextUtils {
 
     public static String getString(String text) {
         return text.replace("&", "§")
-                .replace("%discord%", SealConnect.config.discordUrl)
-                .replace("%botprefix%", SealConnect.config.botPrefix)
-                .replace("%suggestionschannel%", SealConnect.config.suggestionsChannel);
+                .replace("%discord%", config.discordUrl)
+                .replace("%botprefix%", config.botPrefix)
+                .replace("%suggestionschannel%", config.suggestionsChannel);
     }
 
     public static String getString(String text, ProxiedPlayer player) {
