@@ -72,7 +72,7 @@ public class SealConnectConfig {
     @Comment("Os aliases usados para o comando !descricao do bot.")
     public String[] descriptionAliases = {"description", "descrição", "descricao", "descricão", "descriçao"};
 
-    @Comment("Os aliases usados para o comando !servidoro bot.")
+    @Comment("Os aliases usados para o comando !servidor do bot.")
     public String[] serverAliases = {"servidor", "server"};
 
     @Comment("Os aliases usados para o comando !sugerir do bot.")

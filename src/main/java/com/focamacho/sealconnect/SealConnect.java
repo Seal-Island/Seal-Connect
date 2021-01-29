@@ -28,8 +28,8 @@ public final class SealConnect extends Plugin {
     public void onEnable() {
         logger = getLogger();
 
-        SealConfig sealConfig = new SealConfig(new File("./plugins/SealConnect/SealConnect.json"), SealConnectConfig.class, new File("./plugins/SealConnect/lang/"), new SealConnectLang());
-        config = (SealConnectConfig) sealConfig.getConfig();
+        SealConfig sealConfig = new SealConfig(new File("./plugins/SealConnect/lang/"), new SealConnectLang());
+        config = sealConfig.getConfig(new File("./plugins/SealConnect/SealConnect.json"), SealConnectConfig.class);
         lang = sealConfig.getLangConfig();
 
         if(config.botToken.isEmpty()) {
