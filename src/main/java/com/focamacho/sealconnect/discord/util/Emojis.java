@@ -1,6 +1,5 @@
 package com.focamacho.sealconnect.discord.util;
 
-import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.discord.DiscordSealConnect;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;

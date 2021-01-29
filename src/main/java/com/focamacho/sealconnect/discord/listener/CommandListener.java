@@ -1,6 +1,5 @@
 package com.focamacho.sealconnect.discord.listener;
 
-import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.discord.command.Command;
 import com.focamacho.sealconnect.util.TextUtils;
