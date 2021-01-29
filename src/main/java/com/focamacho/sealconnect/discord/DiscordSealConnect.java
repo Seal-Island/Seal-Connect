@@ -5,6 +5,7 @@ import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.command.*;
 import com.focamacho.sealconnect.discord.listener.CommandListener;
 import com.focamacho.sealconnect.discord.listener.SuggestionListener;
+import com.focamacho.seallibrary.common.util.PermissionUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -38,23 +39,35 @@ public class DiscordSealConnect {
     }
 
     public static void updateRoles(ProxiedPlayer player) {
+        if(PermissionUtils.hasPermission(player.getUniqueId(), "*")) return;
+
         Guild guild = SealConnect.config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(SealConnect.config.guildId);
 
         if(guild == null) return;
 
         if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
-            SealConnect.config.linkedRoles.forEach((perm, role) -> {
-                Role rl = guild.getRoleById(role);
-                if(rl == null) return;
-
+            if(!SealConnect.config.nitroRoleName.isEmpty() || SealConnect.config.linkedRoles.size() > 0) {
                 guild.retrieveMemberById(DataHandler.connectedAccounts.get(player.getUniqueId())).queue(member -> {
-                    if(player.hasPermission(perm)) {
-                        if(!member.getRoles().contains(rl)) guild.addRoleToMember(member, rl).queue();
-                    } else {
-                        if(member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
+                    SealConnect.config.linkedRoles.forEach((perm, role) -> {
+                        Role rl = guild.getRoleById(role);
+                        if (rl == null) return;
+
+                        if(PermissionUtils.hasPermission(player.getUniqueId(), perm)) {
+                            if(!member.getRoles().contains(rl)) guild.addRoleToMember(member, rl).queue();
+                        } else {
+                            if(member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
+                        }
+                    });
+
+                    if(!SealConnect.config.nitroRoleName.isEmpty()) {
+                        if(member.getTimeBoosted() != null) {
+                            PermissionUtils.addGroup(player.getUniqueId(), SealConnect.config.nitroRoleName);
+                        } else {
+                            PermissionUtils.removeGroup(player.getUniqueId(), SealConnect.config.nitroRoleName);
+                        }
                     }
-                });
-            });
+                }, ignored -> {});
+            }
         }
     }
 

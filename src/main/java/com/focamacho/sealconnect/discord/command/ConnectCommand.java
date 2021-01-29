@@ -4,7 +4,7 @@ import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.DiscordSealConnect;
-import com.focamacho.sealconnect.discord.utils.TextUtils;
+import com.focamacho.sealconnect.util.TextUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.md_5.bungee.api.ProxyServer;

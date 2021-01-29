@@ -3,7 +3,7 @@ package com.focamacho.sealconnect.discord.listener;
 import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.discord.command.Command;
-import com.focamacho.sealconnect.discord.utils.TextUtils;
+import com.focamacho.sealconnect.util.TextUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

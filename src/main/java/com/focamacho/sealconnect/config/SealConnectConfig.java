@@ -19,6 +19,10 @@ public class SealConnectConfig {
     @Comment("O prefix usado para os comandos do bot no Discord.")
     public String botPrefix = "!";
 
+    @Comment("Grupo para Nitros. Se você deseja que os Nitro Boosters do seu discord recebam um cargo especial no servidor, " +
+            "defina aqui o nome do grupo no minecraft que você deseja que eles recebam.")
+    public String nitroRoleName = "";
+
     @Comment("A mensagem exibida no Activity Presence do Bot.")
     public String activityPresence = "cidade pelas pedras dessas ruas!";
 

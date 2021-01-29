@@ -4,16 +4,14 @@ import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.data.ProfileData;
-import com.focamacho.sealconnect.discord.utils.TextUtils;
+import com.focamacho.sealconnect.util.TextUtils;
 import com.focamacho.seallibrary.common.util.JsonHandler;
+import com.focamacho.seallibrary.common.util.PermissionUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.user.User;
 
 import java.util.Map;
 import java.util.UUID;
@@ -57,14 +55,11 @@ public class MinecraftCommand extends Command {
 
     public static MessageEmbed getProfileMessage(Guild guild, Map.Entry<UUID, String> connectedAccount) {
         try {
-            LuckPerms api = LuckPermsProvider.get();
             ProfileData profileData = DataHandler.getProfileData(connectedAccount.getValue());
-            User user = api.getUserManager().isLoaded(connectedAccount.getKey()) ? api.getUserManager().getUser(connectedAccount.getKey()) : api.getUserManager().loadUser(connectedAccount.getKey()).get();
-
             String nick = DataHandler.savedNames.get(connectedAccount.getKey());
             String description = profileData.getDescription().isEmpty() ? TextUtils.getString(SealConnectLang.getLang("discord.description.default")) : profileData.getDescription();
 
-            String prefix = user != null ? user.getCachedData().getMetaData().getPrefix() : TextUtils.getString(SealConnectLang.getLang("discord.description.defaultrank"));
+            String prefix = PermissionUtils.getPrefix(connectedAccount.getKey());
             if(prefix == null) prefix = TextUtils.getString(SealConnectLang.getLang("discord.description.defaultrank"));
             StringBuilder formattedPrefix = new StringBuilder();
 

@@ -32,8 +32,6 @@ dependencies {
     compile ('net.dv8tion:JDA:4.2.0_227') {
         exclude module: 'opus-java'
     }
-
-    compileOnly 'net.luckperms:api:5.2'
 }
 
 tasks.withType(JavaCompile) {

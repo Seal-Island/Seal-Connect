@@ -33,7 +33,7 @@ public final class SealConnect extends Plugin {
         lang = sealConfig.getLangConfig();
 
         if(config.botToken.isEmpty()) {
-            logger.severe("Você precisa definir o token do seu bot no arquivos de configuração.");
+            logger.severe("Você precisa definir o token do seu bot no arquivo de configuração.");
             return;
         }
 

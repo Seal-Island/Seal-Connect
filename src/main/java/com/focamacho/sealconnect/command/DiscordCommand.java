@@ -2,7 +2,7 @@ package com.focamacho.sealconnect.command;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
-import com.focamacho.sealconnect.discord.utils.TextUtils;
+import com.focamacho.sealconnect.util.TextUtils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

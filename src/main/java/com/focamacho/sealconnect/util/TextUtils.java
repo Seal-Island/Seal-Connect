@@ -1,4 +1,4 @@
-package com.focamacho.sealconnect.discord.utils;
+package com.focamacho.sealconnect.util;
 
 import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
