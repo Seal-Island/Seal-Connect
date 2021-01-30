@@ -28,7 +28,7 @@ public class MinecraftCommand extends Command {
         String[] args = getArgs(message);
 
         if(args.length == 1) {
-            Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromAny(args[0].replace("<@!", "").replace(">", ""));
+            Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromAny(args[0].replace("<", "").replace("@", "").replace("!", "").replace(">", ""));
 
             if(connectedAccount == null) {
                 message.reply(new EmbedBuilder()
