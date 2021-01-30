@@ -40,10 +40,10 @@ public class SealConnectConfig {
     @Comment("Faz com que o usuário tenha que ter a sua conta do Discord conectada ao minecraft para poder votar nas sugestões.")
     public boolean suggestionsRequireConnect = true;
 
-    @Comment("Nome do emoji customizado para indicar 'sim' na mensagem de votação.")
+    @Comment("Nome do emoji customizado para indicar 'sim' na mensagem de sugestão.")
     public String customYesEmoji = "";
 
-    @Comment("Nome do emoji customizado para indicar 'não' na mensagem de votação.")
+    @Comment("Nome do emoji customizado para indicar 'não' na mensagem de sugestão.")
     public String customNoEmoji = "";
 
     @Comment("As roles que você quer que sejam linkadas do Minecraft para o Discord.\n" +
