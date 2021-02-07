@@ -4,8 +4,8 @@ import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.data.ProfileData;
 import com.focamacho.sealconnect.util.TextUtils;
-import com.focamacho.seallibrary.common.util.JsonHandler;
-import com.focamacho.seallibrary.common.util.PermissionUtils;
+import com.focamacho.seallibrary.chat.ChatHandler;
+import com.focamacho.seallibrary.util.JsonHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -60,7 +60,7 @@ public class MinecraftCommand extends Command {
             String nick = DataHandler.savedNames.get(connectedAccount.getKey());
             String description = profileData.getDescription().isEmpty() ? TextUtils.getString(SealConnectLang.getLang("discord.description.default")) : profileData.getDescription();
 
-            String prefix = PermissionUtils.getPrefix(connectedAccount.getKey());
+            String prefix = ChatHandler.getPrefix(connectedAccount.getKey());
             if(prefix == null) prefix = TextUtils.getString(SealConnectLang.getLang("discord.description.defaultrank"));
             StringBuilder formattedPrefix = new StringBuilder();
 

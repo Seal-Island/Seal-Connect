@@ -1,7 +1,7 @@
 package com.focamacho.sealconnect.data;
 
 import com.focamacho.sealconnect.SealConnect;
-import com.focamacho.seallibrary.common.util.JsonHandler;
+import com.focamacho.seallibrary.util.JsonHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

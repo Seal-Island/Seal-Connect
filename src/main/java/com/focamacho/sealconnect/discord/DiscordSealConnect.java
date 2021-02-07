@@ -5,7 +5,7 @@ import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.command.*;
 import com.focamacho.sealconnect.discord.listener.CommandListener;
 import com.focamacho.sealconnect.discord.listener.SuggestionListener;
-import com.focamacho.seallibrary.common.util.PermissionUtils;
+import com.focamacho.seallibrary.permission.PermissionHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -41,7 +41,7 @@ public class DiscordSealConnect {
     }
 
     public static void updateRoles(ProxiedPlayer player) {
-        if(PermissionUtils.hasPermission(player.getUniqueId(), "*")) return;
+        if(PermissionHandler.hasPermission(player.getUniqueId(), "*")) return;
 
         Guild guild = config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(config.guildId);
 
@@ -54,7 +54,7 @@ public class DiscordSealConnect {
                         Role rl = guild.getRoleById(role);
                         if (rl == null) return;
 
-                        if(PermissionUtils.hasPermission(player.getUniqueId(), perm)) {
+                        if(PermissionHandler.hasPermission(player.getUniqueId(), perm)) {
                             if(!member.getRoles().contains(rl)) guild.addRoleToMember(member, rl).queue();
                         } else {
                             if(member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
@@ -63,9 +63,9 @@ public class DiscordSealConnect {
 
                     if(!config.nitroRoleName.isEmpty()) {
                         if(member.getTimeBoosted() != null) {
-                            PermissionUtils.addGroup(player.getUniqueId(), config.nitroRoleName);
+                            PermissionHandler.addGroup(player.getUniqueId(), config.nitroRoleName);
                         } else {
-                            PermissionUtils.removeGroup(player.getUniqueId(), config.nitroRoleName);
+                            PermissionHandler.removeGroup(player.getUniqueId(), config.nitroRoleName);
                         }
                     }
                 }, ignored -> {});

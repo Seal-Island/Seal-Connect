@@ -1,7 +1,7 @@
 package com.focamacho.sealconnect.config;
 
 import com.focamacho.sealconnect.SealConnect;
-import com.focamacho.seallibrary.common.config.ILangConfig;
+import com.focamacho.seallibrary.config.ILangConfig;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

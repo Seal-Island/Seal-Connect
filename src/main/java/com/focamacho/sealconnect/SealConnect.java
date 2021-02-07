@@ -6,8 +6,8 @@ import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.DiscordSealConnect;
 import com.focamacho.sealconnect.event.ServerConnectedListener;
-import com.focamacho.seallibrary.common.config.ILangConfig;
-import com.focamacho.seallibrary.common.config.SealConfig;
+import com.focamacho.seallibrary.config.ILangConfig;
+import com.focamacho.seallibrary.config.SealConfig;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
