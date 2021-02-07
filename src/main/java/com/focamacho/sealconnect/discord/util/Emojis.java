@@ -12,9 +12,8 @@ public class Emojis {
     public static Emote animatedCross = null;
 
     static {
-        if(!config.guildId.isEmpty()) {
-            Guild guild = DiscordSealConnect.jda.getGuildById(config.guildId);
-
+        Guild guild = DiscordSealConnect.jda.getGuildById(config.guildId);
+        if(!config.guildId.isEmpty() && guild != null) {
             if(!config.customYesEmoji.isEmpty()) animatedCheckmark = guild.getEmotesByName(config.customYesEmoji, true).get(0);
             if(!config.customNoEmoji.isEmpty()) animatedCross = guild.getEmotesByName(config.customNoEmoji, true).get(0);
         } else {

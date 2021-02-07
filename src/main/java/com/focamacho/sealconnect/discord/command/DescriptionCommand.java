@@ -5,6 +5,7 @@ import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.util.TextUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.Map;
 import java.util.UUID;
@@ -50,7 +51,8 @@ public class DescriptionCommand extends Command {
         }
 
         DataHandler.getProfileData(message.getAuthor().getId()).setDescription(description);
-        message.reply(MinecraftCommand.getProfileMessage(message.getGuild(), connectedAccount)).queue();
+        MessageEmbed embed = MinecraftCommand.getProfileMessage(message.getGuild(), connectedAccount);
+        if(embed != null) message.reply(embed).queue();
     }
 
 }

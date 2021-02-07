@@ -58,6 +58,7 @@ public class SealConnectLang implements ILangConfig {
         pt_br.put("discord.suggestion.suggestion", "Sugestão:");
         pt_br.put("discord.suggestion.vote", "Vote!");
         pt_br.put("discord.suggestion.vote.description", "Vote se você concorda ou não com essa sugestão.\nCaso queira fazer a sua própria sugestão é só usar o comando **%botprefix%sugerir**.");
+        pt_br.put("discord.suggestion.channelmissing", "Não foi possível encontrar o canal de sugestões. Caso você seja um administrador, verifique as configurações do Seal Connect.");
 
         pt_br.put("discord.error.title", "Erro");
         pt_br.put("discord.error.description", "Você não tem permissão para executar esse comando.");

@@ -32,7 +32,7 @@ public abstract class Command {
         return rawMessage.substring(rawMessage.indexOf(" ") + 1).split(" ");
     }
 
-    protected void redirectCommand(Message message, Class target) {
+    protected void redirectCommand(Message message, Class<? extends Command> target) {
         for (Command command : commands) {
             if(command.getClass() == target) {
                 command.execute(message);

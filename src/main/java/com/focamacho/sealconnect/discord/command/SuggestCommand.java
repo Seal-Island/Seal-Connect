@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -54,20 +55,25 @@ public class SuggestCommand extends Command {
             if(i < args.length - 1) suggestion.append(" ");
         }
 
-        message.getGuild().getTextChannelById(config.suggestionsChannel).sendMessage(getSuggestionMessage(message.getGuild(), connectedAccount, suggestion.toString())).queue(msg -> {
-            message.reply(new EmbedBuilder()
-                    .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
-                    .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.success")))
-                    .setColor(config.color)
-                    .setThumbnail(TextUtils.getString(config.successfulImage))
-                    .build()).queue();
+        TextChannel channel = message.getGuild().getTextChannelById(config.suggestionsChannel);
+        if(channel != null) {
+            channel.sendMessage(getSuggestionMessage(message.getGuild(), connectedAccount, suggestion.toString())).queue(msg -> {
+                message.reply(new EmbedBuilder()
+                        .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.title")))
+                        .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.success")))
+                        .setColor(config.color)
+                        .setThumbnail(TextUtils.getString(config.successfulImage))
+                        .build()).queue();
 
-            if(Emojis.animatedCheckmark == null) msg.addReaction("✅").queue();
-            else msg.addReaction(Emojis.animatedCheckmark).queue();
+                if(Emojis.animatedCheckmark == null) msg.addReaction("✅").queue();
+                else msg.addReaction(Emojis.animatedCheckmark).queue();
 
-            if(Emojis.animatedCross == null) msg.addReaction("❌").queue();
-            else msg.addReaction(Emojis.animatedCross).queue();
-        });
+                if(Emojis.animatedCross == null) msg.addReaction("❌").queue();
+                else msg.addReaction(Emojis.animatedCross).queue();
+            });
+        } else {
+            message.reply(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.channelmissing"))).queue();
+        }
     }
 
     public static MessageEmbed getSuggestionMessage(Guild guild, Map.Entry<UUID, String> connectedAccount, String suggestion) {
