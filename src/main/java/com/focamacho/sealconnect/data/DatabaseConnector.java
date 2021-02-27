@@ -36,13 +36,15 @@ public class DatabaseConnector {
         if(connect()) {
             try {
                 //Tabela de usuários
-                String sql = "CREATE TABLE IF NOT EXISTS sealconnect_accounts (" +
+                String userTableSql = "CREATE TABLE IF NOT EXISTS sealconnect_accounts (" +
                         "id INT AUTO_INCREMENT PRIMARY KEY," +
                         "user_uuid VARCHAR(36) NOT NULL," +
                         "user_discord_id LONG NOT NULL," +
                         "user_description VARCHAR(180)," +
-                        "user_name VARCHAR(16) NOT NULL);";
-                connection.createStatement().execute(sql);
+                        "user_last_login LONG," +
+                        "user_name VARCHAR(16) NOT NULL)";
+
+                connection.createStatement().execute(userTableSql);
             } catch (SQLException e) {
                 SealConnect.logger.severe("Ocorreu um erro ao tentar criar as tabelas no banco de dados.");
                 e.printStackTrace();
@@ -57,7 +59,7 @@ public class DatabaseConnector {
         try {
             if(connection != null && !connection.isClosed()) return true;
             if(config.mysql.enableMysql) {
-                String databaseUrl = "jdbc:mysql://" + config.mysql.mysqlAddress + "/" + config.mysql.mysqlDatabase;
+                String databaseUrl = "jdbc:mysql://" + config.mysql.mysqlAddress + "/" + config.mysql.mysqlDatabase + "?characterEncoding=utf8";
                 if(!config.mysql.advanced.mysqlConnectionUrl.isEmpty()) databaseUrl = config.mysql.advanced.mysqlConnectionUrl;
                 connection = DriverManager.getConnection(databaseUrl, config.mysql.mysqlUser, config.mysql.mysqlPassword);
             } else {
@@ -82,13 +84,14 @@ public class DatabaseConnector {
         }
     }
 
-    public boolean insertUser(UUID uuid, String discordId, String description, String name) {
+    public boolean insertUser(UUID uuid, String discordId, String description, String name, long lastLogin) {
         String sql = "INSERT INTO sealconnect_accounts(" +
                 "user_uuid," +
                 "user_discord_id," +
                 "user_description," +
-                "user_name" +
-                ") VALUES(?,?,?,?);";
+                "user_name," +
+                "user_last_login" +
+                ") VALUES(?,?,?,?,?);";
 
         try {
             if(connect()) {
@@ -98,6 +101,7 @@ public class DatabaseConnector {
                 statement.setLong(2, Long.parseLong(discordId));
                 statement.setString(3, description);
                 statement.setString(4, name);
+                statement.setLong(5, lastLogin);
 
                 int result = statement.executeUpdate();
                 return result == 1;
@@ -171,6 +175,28 @@ public class DatabaseConnector {
             }
         } catch (SQLException e) {
             SealConnect.logger.severe("Ocorreu um erro ao tentar atualizar a descrição de um usuário no banco de dados.");
+            e.printStackTrace();
+        } finally {
+            disconnect();
+        }
+    }
+
+    public void updateLastLogin(UUID uuid, long lastLogin) {
+        String sql = "UPDATE sealconnect_accounts " +
+                "SET user_last_login = ? " +
+                "WHERE user_uuid = ?;";
+
+        try {
+            if(connect()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+
+                statement.setLong(1, lastLogin);
+                statement.setString(2, uuid.toString());
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            SealConnect.logger.severe("Ocorreu um erro ao tentar atualizar a data de último login de um usuário no banco de dados.");
             e.printStackTrace();
         } finally {
             disconnect();

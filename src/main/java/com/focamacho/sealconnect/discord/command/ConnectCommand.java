@@ -45,7 +45,7 @@ public class ConnectCommand extends Command {
 
         KeySealConnect key = DataHandler.getKey(args[0].toLowerCase());
         if(key != null) {
-            DataHandler.addUser(key.getUuid(), message.getAuthor().getId(), "", key.getName());
+            DataHandler.addUser(key.getUuid(), message.getAuthor().getId(), "", key.getName(), System.currentTimeMillis());
 
             ProxiedPlayer player = ProxyServer.getInstance().getPlayer(key.getUuid());
             if(player != null) DiscordSealConnect.updateRoles(player);

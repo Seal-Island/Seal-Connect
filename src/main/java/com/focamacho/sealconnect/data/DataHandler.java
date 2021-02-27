@@ -35,7 +35,8 @@ public class DataHandler {
                             UUID.fromString(users.getString("user_uuid")),
                             users.getString("user_name"),
                             String.valueOf(users.getLong("user_discord_id")),
-                            users.getString("user_description")));
+                            users.getString("user_description"),
+                            users.getLong("user_last_login")));
                 }
 
                 SealConnect.logger.info("Carregamento de dados concluido com sucesso!");
@@ -52,9 +53,9 @@ public class DataHandler {
         return false;
     }
 
-    public static void addUser(UUID uuid, String discord, String description, String name) {
-        if(handler.insertUser(uuid, discord, description, name)) {
-            connectedAccounts.add(new AccountSealConnect(uuid, name, discord, description));
+    public static void addUser(UUID uuid, String discord, String description, String name, long date) {
+        if(handler.insertUser(uuid, discord, description, name, date)) {
+            connectedAccounts.add(new AccountSealConnect(uuid, name, discord, description, date));
         }
     }
 

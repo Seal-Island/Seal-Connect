@@ -43,9 +43,7 @@ public class DiscordSealConnect {
     }
 
     public static void updateRoles(ProxiedPlayer player) {
-        if(PermissionHandler.hasPermission(player.getUniqueId(), "*")) return;
-
-        Guild guild = jda.getGuilds().get(0);
+        Guild guild = jda.getGuilds().size() > 0 ? jda.getGuilds().get(0) : null;
 
         if(guild == null) return;
 
@@ -55,6 +53,10 @@ public class DiscordSealConnect {
             if(!account.getName().equalsIgnoreCase(player.getName())) {
                 account.setName(player.getName());
             }
+
+            account.setLastLogin(System.currentTimeMillis());
+
+            if(PermissionHandler.hasPermission(player.getUniqueId(), "*")) return;
 
             if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
                 guild.retrieveMemberById(account.getDiscord()).queue(member -> {

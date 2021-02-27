@@ -42,7 +42,7 @@ public class SealConnectLang implements ILangConfig {
         pt_br.put("discord.minecraft.noaccount", "Não foi possível encontrar nenhuma conta com os dados informados.");
         pt_br.put("discord.minecraft.nickname", "Nickname:");
         pt_br.put("discord.minecraft.rank", "Rank:");
-        pt_br.put("discord.minecraft.original", "É original:");
+        pt_br.put("discord.minecraft.lastlogin", "Último login:");
         pt_br.put("discord.minecraft.discord", "Discord:");
         pt_br.put("discord.minecraft.discordid", "ID do Discord:");
         pt_br.put("discord.minecraft.uuid", "UUID:");

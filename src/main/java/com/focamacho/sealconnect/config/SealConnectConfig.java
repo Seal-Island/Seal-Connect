@@ -47,6 +47,9 @@ public class SealConnectConfig {
     @Comment("Nome do emoji customizado para indicar 'não' na mensagem de sugestão e desconexão de conta.")
     public String customNoEmoji = "";
 
+    @Comment("O tipo de horário usado pelo plugin.")
+    public String timezone = "GMT-03:00";
+
     @Comment("As roles que você quer que sejam linkadas do Minecraft para o Discord.\n" +
             "O formato de configuração é: 'permissao':'idDaRole'\n" +
             "Os usuários que tiverem a permissão definida, receberam a role com o ID definido")

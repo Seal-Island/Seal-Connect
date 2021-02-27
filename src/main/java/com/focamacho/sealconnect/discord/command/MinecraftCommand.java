@@ -5,19 +5,25 @@ import com.focamacho.sealconnect.data.AccountSealConnect;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.util.TextUtils;
 import com.focamacho.seallibrary.chat.ChatHandler;
-import com.focamacho.seallibrary.util.JsonHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import static com.focamacho.sealconnect.SealConnect.config;
 
 public class MinecraftCommand extends Command {
 
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
     public MinecraftCommand(String... aliases) {
         super(aliases);
+        dateFormat.setTimeZone(TimeZone.getTimeZone(config.timezone));
     }
 
     @Override
@@ -73,7 +79,6 @@ public class MinecraftCommand extends Command {
             }
         }
 
-        boolean original = JsonHandler.readJsonFromURL("https://sessionserver.mojang.com/session/minecraft/profile/" + connectedAccount.getUuid().toString().replace("-", "")).has("id");
         int color = config.color;
 
         try {
@@ -92,7 +97,7 @@ public class MinecraftCommand extends Command {
                 .setColor(color)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.nickname")), nick, true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.rank")), formattedPrefix.toString(), true)
-                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.original")), original ? TextUtils.getString(SealConnectLang.getLang("discord.minecraft.yes")) : TextUtils.getString(SealConnectLang.getLang("discord.minecraft.no")), true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.lastlogin")), connectedAccount.getLastLogin() == 0 ? "???" : dateFormat.format(new Date(connectedAccount.getLastLogin())).replace("-", "/"), true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discord")), "<@!" + connectedAccount.getDiscord() + ">", true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discordid")), connectedAccount.getDiscord(), true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.uuid")), connectedAccount.getUuid().toString(), true)
