@@ -30,7 +30,6 @@ public class ServerCommand extends Command {
                 .setAuthor(guild.getName(), null, guild.getIconUrl())
                 .setThumbnail(guild.getIconUrl())
                 .setColor(config.color)
-                .addField(TextUtils.getString(SealConnectLang.getLang("discord.server.players")), "" + DataHandler.savedNames.size(), true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.server.connected")), "" + DataHandler.connectedAccounts.size(), true)
                 .build()).queue();
     }

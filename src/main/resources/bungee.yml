@@ -3,3 +3,4 @@ version: @version@
 main: com.focamacho.sealconnect.SealConnect
 description: Plugin de conexão de contas entre o discord e o minecraft para BungeeCord
 author: Focamacho
+depends: ["seallibrary"]

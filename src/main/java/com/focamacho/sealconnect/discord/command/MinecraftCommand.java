@@ -1,8 +1,8 @@
 package com.focamacho.sealconnect.discord.command;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
+import com.focamacho.sealconnect.data.AccountSealConnect;
 import com.focamacho.sealconnect.data.DataHandler;
-import com.focamacho.sealconnect.data.ProfileData;
 import com.focamacho.sealconnect.util.TextUtils;
 import com.focamacho.seallibrary.chat.ChatHandler;
 import com.focamacho.seallibrary.util.JsonHandler;
@@ -11,9 +11,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-
-import java.util.Map;
-import java.util.UUID;
 
 import static com.focamacho.sealconnect.SealConnect.config;
 
@@ -28,7 +25,7 @@ public class MinecraftCommand extends Command {
         String[] args = getArgs(message);
 
         if(args.length == 1) {
-            Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromAny(args[0].replace("<", "").replace("@", "").replace("!", "").replace(">", ""));
+            AccountSealConnect connectedAccount = DataHandler.getConnectedAccountFromAny(args[0].replace("<", "").replace("@", "").replace("!", "").replace(">", ""));
 
             if(connectedAccount == null) {
                 message.reply(new EmbedBuilder()
@@ -44,7 +41,7 @@ public class MinecraftCommand extends Command {
             return;
         }
 
-        Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
+        AccountSealConnect connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
 
         if(connectedAccount == null) {
             redirectCommand(message, ConnectCommand.class);
@@ -54,51 +51,51 @@ public class MinecraftCommand extends Command {
         message.reply(getProfileMessage(message.getGuild(), connectedAccount)).queue();
     }
 
-    public static MessageEmbed getProfileMessage(Guild guild, Map.Entry<UUID, String> connectedAccount) {
+    public static MessageEmbed getProfileMessage(Guild guild, AccountSealConnect connectedAccount) {
+        String nick = connectedAccount.getName();
+        String description = connectedAccount.getDescription();
+        if(description.isEmpty()) description = TextUtils.getString(SealConnectLang.getLang("discord.description.default"));
+
+        String prefix = ChatHandler.getPrefix(connectedAccount.getUuid());
+        if(prefix == null) prefix = TextUtils.getString(SealConnectLang.getLang("discord.description.defaultrank"));
+        StringBuilder formattedPrefix = new StringBuilder();
+
+        boolean skipNext = false;
+        for(char c : prefix.toCharArray()) {
+            if(skipNext) {
+                skipNext = false;
+            } else {
+                if(c == '&' || c == '§') {
+                    skipNext = true;
+                } else {
+                    formattedPrefix.append(c);
+                }
+            }
+        }
+
+        boolean original = JsonHandler.readJsonFromURL("https://sessionserver.mojang.com/session/minecraft/profile/" + connectedAccount.getUuid().toString().replace("-", "")).has("id");
+        int color = config.color;
+
         try {
-            ProfileData profileData = DataHandler.getProfileData(connectedAccount.getValue());
-            String nick = DataHandler.savedNames.get(connectedAccount.getKey());
-            String description = profileData.getDescription().isEmpty() ? TextUtils.getString(SealConnectLang.getLang("discord.description.default")) : profileData.getDescription();
-
-            String prefix = ChatHandler.getPrefix(connectedAccount.getKey());
-            if(prefix == null) prefix = TextUtils.getString(SealConnectLang.getLang("discord.description.defaultrank"));
-            StringBuilder formattedPrefix = new StringBuilder();
-
-            boolean skipNext = false;
-            for(char c : prefix.toCharArray()) {
-               if(skipNext) {
-                   skipNext = false;
-               } else {
-                   if(c == '&' || c == '§') {
-                       skipNext = true;
-                   } else {
-                       formattedPrefix.append(c);
-                   }
-               }
-            }
-
-            boolean original = JsonHandler.readJsonFromURL("https://sessionserver.mojang.com/session/minecraft/profile/" + connectedAccount.getKey().toString().replace("-", "")).has("id");
-            int color = config.color;
-
-            Member member = guild.retrieveMemberById(connectedAccount.getValue()).complete();
+            Member member = guild.retrieveMemberById(connectedAccount.getDiscord()).complete();
             if (member != null) {
-                if (config.minecraftColorId.isEmpty() || member.getRoles().contains(guild.getRoleById(config.minecraftColorId))) color = member.getColorRaw();
+                if (config.minecraftColorId.isEmpty() || member.getRoles().contains(guild.getRoleById(config.minecraftColorId)))
+                    color = member.getColorRaw();
             }
+        } catch(Exception ignored) {}
 
-            return new EmbedBuilder()
-                    .setAuthor(nick, null, "https://minotar.net/helm/" + nick + "/100.png")
-                    .setDescription(description)
-                    .setThumbnail("https://minotar.net/helm/" + nick + "/100.png")
-                    .setFooter(guild.getName(), guild.getIconUrl())
-                    .setColor(color)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.nickname")), nick, true)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.rank")), formattedPrefix.toString(), true)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.original")), original ? TextUtils.getString(SealConnectLang.getLang("discord.minecraft.yes")) : TextUtils.getString(SealConnectLang.getLang("discord.minecraft.no")), true)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discord")), "<@!" + connectedAccount.getValue() + ">", true)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discordid")), connectedAccount.getValue(), true)
-                    .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.uuid")), connectedAccount.getKey().toString(), true)
-                    .build();
-        } catch(Exception e) { e.printStackTrace(); }
-        return null;
+        return new EmbedBuilder()
+                .setAuthor(nick, null, "https://minotar.net/helm/" + nick + "/100.png")
+                .setDescription(description)
+                .setThumbnail("https://minotar.net/helm/" + nick + "/100.png")
+                .setFooter(guild.getName(), guild.getIconUrl())
+                .setColor(color)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.nickname")), nick, true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.rank")), formattedPrefix.toString(), true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.original")), original ? TextUtils.getString(SealConnectLang.getLang("discord.minecraft.yes")) : TextUtils.getString(SealConnectLang.getLang("discord.minecraft.no")), true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discord")), "<@!" + connectedAccount.getDiscord() + ">", true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.discordid")), connectedAccount.getDiscord(), true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.minecraft.uuid")), connectedAccount.getUuid().toString(), true)
+                .build();
     }
 }

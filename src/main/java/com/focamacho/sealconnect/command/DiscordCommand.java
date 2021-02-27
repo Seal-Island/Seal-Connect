@@ -1,8 +1,11 @@
 package com.focamacho.sealconnect.command;
 
+import com.focamacho.sealconnect.SealConnect;
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
+import com.focamacho.sealconnect.data.KeySealConnect;
 import com.focamacho.sealconnect.util.TextUtils;
+import com.focamacho.seallibrary.permission.PermissionHandler;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -17,33 +20,44 @@ public class DiscordCommand extends Command {
     }
 
     @Override
+    public String[] getAliases() {
+        return SealConnect.config.discordAliases;
+    }
+
+    @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer)) {
+        if(!(sender instanceof ProxiedPlayer) && args.length == 0) {
             TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.only.players"));
             return;
         }
 
         ProxiedPlayer player = (ProxiedPlayer) sender;
+        if(!PermissionHandler.hasPermission(player.getUniqueId(), "sealconnect.discord")) {
+            TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.no.permission"));
+            return;
+        }
+
         if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
             TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.already.connected"));
             return;
         }
 
-        String key = DataHandler.keys.get(player.getUniqueId());
-        if(key == null) key = genNewKey(player.getUniqueId());
+        KeySealConnect keySeal = DataHandler.getKey(player.getUniqueId());
+        if(keySeal == null) keySeal = genNewKey(player.getUniqueId(), player.getName());
 
-        TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.key").replace("%key%", key), player);
+        TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.key").replace("%key%", keySeal.getKey()), player);
     }
 
-    private String genNewKey(UUID uuid) {
+    private KeySealConnect genNewKey(UUID uuid, String name) {
         Random rand = new Random();
         StringBuilder key = new StringBuilder();
         while(key.length() <= 6) {
             String chars = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
             key.append(chars.charAt(rand.nextInt(chars.length())));
-            if(DataHandler.keys.containsValue(key.toString().toLowerCase())) key = new StringBuilder();
+            if(DataHandler.getKey(key.toString().toLowerCase()) != null) key = new StringBuilder();
         }
-        DataHandler.keys.put(uuid, key.toString());
-        return key.toString();
+        KeySealConnect newKey = new KeySealConnect(uuid, name, key.toString());
+        DataHandler.keys.add(newKey);
+        return newKey;
     }
 }

@@ -1,6 +1,7 @@
 package com.focamacho.sealconnect.discord.command;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
+import com.focamacho.sealconnect.data.AccountSealConnect;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.util.Emojis;
 import com.focamacho.sealconnect.util.TextUtils;
@@ -11,8 +12,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.UUID;
 
 import static com.focamacho.sealconnect.SealConnect.config;
 
@@ -27,7 +26,7 @@ public class SuggestCommand extends Command {
         if(config.suggestionsChannel.isEmpty()) return;
 
         String[] args = getArgs(message);
-        Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
+        AccountSealConnect connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
 
         if(connectedAccount == null) {
             message.reply(new EmbedBuilder()
@@ -76,19 +75,18 @@ public class SuggestCommand extends Command {
         }
     }
 
-    public static MessageEmbed getSuggestionMessage(Guild guild, Map.Entry<UUID, String> connectedAccount, String suggestion) {
-        String nick = DataHandler.savedNames.get(connectedAccount.getKey());
+    public static MessageEmbed getSuggestionMessage(Guild guild, AccountSealConnect connectedAccount, String suggestion) {
+        String nick = connectedAccount.getName();
 
         return new EmbedBuilder()
                 .setAuthor(nick, null, "https://minotar.net/helm/" + nick + "/100.png")
                 .setThumbnail("https://minotar.net/helm/" + nick + "/100.png")
-                .setFooter(guild.getName(), guild.getIconUrl())
+                .setFooter(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.footer")), guild.getIconUrl())
                 .setTimestamp(OffsetDateTime.now())
                 .setColor(config.color)
-                .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.suggestedby")), "<@!" + connectedAccount.getValue() + ">", true)
+                .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.suggestedby")), "<@!" + connectedAccount.getDiscord() + ">", true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.servernick")), nick, true)
                 .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.suggestion")), suggestion, false)
-                .addField(TextUtils.getString(SealConnectLang.getLang("discord.suggestion.vote")), TextUtils.getString(SealConnectLang.getLang("discord.suggestion.vote.description")), true)
                 .build();
     }
 }

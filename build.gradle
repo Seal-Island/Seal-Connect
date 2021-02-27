@@ -9,6 +9,7 @@ apply plugin: 'java'
 
 group = 'com.focamacho'
 version = '1.2'
+archivesBaseName = 'SealConnect'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -28,11 +29,20 @@ dependencies {
 
     compileOnly group: 'org.json', name: 'json', version: '20200518'
     compileOnly group: 'commons-io', name: 'commons-io', version: '2.7'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.34.0'
 
     compile("ch.qos.logback:logback-classic:1.2.3")
 
     compile ('net.dv8tion:JDA:4.2.0_227') {
         exclude module: 'opus-java'
+    }
+    compile 'com.jagrosh:jda-utilities:3.0.5'
+}
+
+shadowJar {
+    //Remover o org.json do ShadowJar pois ele já está incluso na Seal Library
+    dependencies {
+        exclude 'org/json/*'
     }
 }
 

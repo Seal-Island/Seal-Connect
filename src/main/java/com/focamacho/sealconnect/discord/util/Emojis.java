@@ -12,13 +12,14 @@ public class Emojis {
     public static Emote animatedCross = null;
 
     static {
-        Guild guild = DiscordSealConnect.jda.getGuildById(config.guildId);
-        if(!config.guildId.isEmpty() && guild != null) {
-            if(!config.customYesEmoji.isEmpty()) animatedCheckmark = guild.getEmotesByName(config.customYesEmoji, true).get(0);
-            if(!config.customNoEmoji.isEmpty()) animatedCross = guild.getEmotesByName(config.customNoEmoji, true).get(0);
-        } else {
-            if(!config.customYesEmoji.isEmpty()) animatedCheckmark = DiscordSealConnect.jda.getEmotesByName(config.customYesEmoji, true).get(0);
-            if(!config.customNoEmoji.isEmpty()) animatedCross = DiscordSealConnect.jda.getEmotesByName(config.customNoEmoji, true).get(0);
+        if(DiscordSealConnect.jda.getGuilds().size() > 0) {
+            Guild guild = DiscordSealConnect.jda.getGuilds().get(0);
+            if (guild != null) {
+                if (!config.customYesEmoji.isEmpty())
+                    animatedCheckmark = guild.getEmotesByName(config.customYesEmoji, true).get(0);
+                if (!config.customNoEmoji.isEmpty())
+                    animatedCross = guild.getEmotesByName(config.customNoEmoji, true).get(0);
+            }
         }
     }
 

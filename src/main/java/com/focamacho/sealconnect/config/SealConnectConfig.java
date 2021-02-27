@@ -1,6 +1,6 @@
 package com.focamacho.sealconnect.config;
 
-import blue.endless.jankson.Comment;
+import com.focamacho.sealconfig.relocated.blue.endless.jankson.Comment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,9 @@ public class SealConnectConfig {
     @Comment("O prefix usado para os comandos do bot no Discord.")
     public String botPrefix = "!";
 
+    @Comment("A mensagem usada no Minecraft para confirmar a desconexão de contas.")
+    public String disconnectConfirm = "CONFIRMAR";
+
     @Comment("Grupo para Nitros. Se você deseja que os Nitro Boosters do seu discord recebam um cargo especial no servidor, " +
             "defina aqui o nome do grupo no minecraft que você deseja que eles recebam.")
     public String nitroRoleName = "";
@@ -29,9 +32,6 @@ public class SealConnectConfig {
     @Comment("A cor usada para os embeds do bot no Discord.")
     public int color = 9438204;
 
-    @Comment("O id da guilda em que o bot deve executar os comandos. Só precisa ser definida se o bot estiver em mais de uma guild.")
-    public String guildId = "";
-
     @Comment("Caso queira ativar o módulo de sugestões, defina aqui o ID do canal que será usado para as sugestões.\n" +
             "Atenção: O canal será definido como somente para votação de sugestões.\n" +
             "Defina um canal vazio, com chat trancado para isso.")
@@ -40,10 +40,10 @@ public class SealConnectConfig {
     @Comment("Faz com que o usuário tenha que ter a sua conta do Discord conectada ao minecraft para poder votar nas sugestões.")
     public boolean suggestionsRequireConnect = true;
 
-    @Comment("Nome do emoji customizado para indicar 'sim' na mensagem de sugestão.")
+    @Comment("Nome do emoji customizado para indicar 'sim' na mensagem de sugestão e desconexão de conta.")
     public String customYesEmoji = "";
 
-    @Comment("Nome do emoji customizado para indicar 'não' na mensagem de sugestão.")
+    @Comment("Nome do emoji customizado para indicar 'não' na mensagem de sugestão e desconexão de conta.")
     public String customNoEmoji = "";
 
     @Comment("As roles que você quer que sejam linkadas do Minecraft para o Discord.\n" +
@@ -63,6 +63,12 @@ public class SealConnectConfig {
     @Comment("Imagem usada de thumbnail em embeds onde o comando foi executado corretamente.")
     public String successfulImage = "https://cdn.discordapp.com/attachments/761766827176886335/796281132429737994/minecraft.gif";
 
+    @Comment("Os aliases usados para o comando /discord no Minecraft.")
+    public String[] discordAliases = {"discord"};
+
+    @Comment("Os aliases usados para o comando /desconectar no Minecraft.")
+    public String[] disconnectAliasesMinecraft = {"desconectar", "disconnect"};
+
     @Comment("Os aliases usados para o comando !conectar do bot.")
     public String[] connectAliases = {"conectar", "usarkey", "key", "connect"};
 
@@ -77,4 +83,8 @@ public class SealConnectConfig {
 
     @Comment("Os aliases usados para o comando !sugerir do bot.")
     public String[] suggestAliases = {"sugerir", "sugestao", "sugestão", "suggest"};
+
+    @Comment("Os aliases usados para o comando !desconectar do bot.")
+    public String[] disconnectAliasesDiscord = {"desconectar", "disconnect"};
+
 }

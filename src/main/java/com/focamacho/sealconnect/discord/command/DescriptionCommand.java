@@ -1,14 +1,12 @@
 package com.focamacho.sealconnect.discord.command;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
+import com.focamacho.sealconnect.data.AccountSealConnect;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.util.TextUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-
-import java.util.Map;
-import java.util.UUID;
 
 import static com.focamacho.sealconnect.SealConnect.config;
 
@@ -21,7 +19,7 @@ public class DescriptionCommand extends Command {
     @Override
     public void execute(Message message) {
         String[] args = getArgs(message);
-        Map.Entry<UUID, String> connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
+        AccountSealConnect connectedAccount = DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId());
 
         if(connectedAccount == null) {
             message.reply(new EmbedBuilder()
@@ -50,9 +48,9 @@ public class DescriptionCommand extends Command {
             return;
         }
 
-        DataHandler.getProfileData(message.getAuthor().getId()).setDescription(description);
+        connectedAccount.setDescription(description);
         MessageEmbed embed = MinecraftCommand.getProfileMessage(message.getGuild(), connectedAccount);
-        if(embed != null) message.reply(embed).queue();
+        message.reply(embed).queue();
     }
 
 }

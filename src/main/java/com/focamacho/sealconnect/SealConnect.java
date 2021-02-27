@@ -1,5 +1,6 @@
 package com.focamacho.sealconnect;
 
+import com.focamacho.sealconnect.command.DisconnectCommand;
 import com.focamacho.sealconnect.command.DiscordCommand;
 import com.focamacho.sealconnect.config.SealConnectConfig;
 import com.focamacho.sealconnect.config.SealConnectLang;
@@ -37,16 +38,18 @@ public final class SealConnect extends Plugin {
             return;
         }
 
-        DataHandler.init();
-        DiscordSealConnect.init();
+        if(DataHandler.init()) {
+            DiscordSealConnect.init();
 
-        getProxy().getPluginManager().registerListener(this, new ServerConnectedListener());
-        getProxy().getPluginManager().registerCommand(this, new DiscordCommand("Discord"));
+            getProxy().getPluginManager().registerListener(this, new ServerConnectedListener());
+            getProxy().getPluginManager().registerCommand(this, new DiscordCommand("Discord"));
+            getProxy().getPluginManager().registerCommand(this, new DisconnectCommand("Desconectar"));
+        }
     }
 
     @Override
     public void onDisable() {
-        if(!config.botToken.isEmpty()) DataHandler.save();
+        DataHandler.handler.disconnect();
     }
 
 }

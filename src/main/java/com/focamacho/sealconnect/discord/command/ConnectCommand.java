@@ -2,15 +2,13 @@ package com.focamacho.sealconnect.discord.command;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
 import com.focamacho.sealconnect.data.DataHandler;
+import com.focamacho.sealconnect.data.KeySealConnect;
 import com.focamacho.sealconnect.discord.DiscordSealConnect;
 import com.focamacho.sealconnect.util.TextUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.Map;
-import java.util.UUID;
 
 import static com.focamacho.sealconnect.SealConnect.config;
 
@@ -25,7 +23,13 @@ public class ConnectCommand extends Command {
         String[] args = getArgs(message);
 
         if(DataHandler.getConnectedAccountFromDiscordID(message.getAuthor().getId()) != null) {
-            redirectCommand(message, MinecraftCommand.class);
+            if(args.length == 0) redirectCommand(message, MinecraftCommand.class);
+            else message.reply(new EmbedBuilder()
+                    .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.connect.title")))
+                    .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.connect.already.connected")))
+                    .setColor(config.color)
+                    .setThumbnail(TextUtils.getString(config.erroredImage))
+                    .build()).queue();
             return;
         }
 
@@ -39,15 +43,14 @@ public class ConnectCommand extends Command {
             return;
         }
 
-        Map.Entry<UUID, String> key = DataHandler.getKey(args[0].toLowerCase());
+        KeySealConnect key = DataHandler.getKey(args[0].toLowerCase());
         if(key != null) {
-            DataHandler.connectedAccounts.put(key.getKey(), message.getAuthor().getId());
+            DataHandler.addUser(key.getUuid(), message.getAuthor().getId(), "", key.getName());
 
-            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(key.getKey());
+            ProxiedPlayer player = ProxyServer.getInstance().getPlayer(key.getUuid());
             if(player != null) DiscordSealConnect.updateRoles(player);
 
-            DataHandler.keys.remove(key.getKey());
-            DataHandler.save();
+            DataHandler.keys.remove(key);
 
             String title = player != null ? TextUtils.getString(SealConnectLang.getLang("discord.connect.title"), player) : TextUtils.getString(SealConnectLang.getLang("discord.connect.title"));
             String description = player != null ? TextUtils.getString(SealConnectLang.getLang("discord.connected.description"), player) : TextUtils.getString(SealConnectLang.getLang("discord.connected.description"));

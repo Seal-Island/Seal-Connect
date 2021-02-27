@@ -1,124 +1,130 @@
 package com.focamacho.sealconnect.data;
 
 import com.focamacho.sealconnect.SealConnect;
-import com.focamacho.seallibrary.util.JsonHandler;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.focamacho.sealconnect.discord.DiscordSealConnect;
+import com.focamacho.seallibrary.permission.PermissionHandler;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import static com.focamacho.sealconnect.SealConnect.config;
 
 public class DataHandler {
 
-    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
+    public static final SQLiteHandler handler = new SQLiteHandler();
 
-    public static final File dataFile = new File("./plugins/SealConnect/data.json");
+    public static List<AccountSealConnect> connectedAccounts = new ArrayList<>();
+    public static List<KeySealConnect> keys = new ArrayList<>();
 
-    public static Map<UUID, String> connectedAccounts = new HashMap<>();
-    public static Map<UUID, String> keys = new HashMap<>();
-    public static Map<UUID, String> savedNames = new HashMap<>();
-    public static Map<String, ProfileData> profileData = new HashMap<>();
-
-    public static void init() {
+    public static boolean init() {
         SealConnect.logger.info("Iniciando carregamento dos dados...");
+
+        connectedAccounts.clear();
+        keys.clear();
+
         try {
-            connectedAccounts.clear();
-            keys.clear();
-            savedNames.clear();
+            if (handler.connect()) {
+                ResultSet users = handler.getAllUsers();
+                while(users.next()) {
+                    connectedAccounts.add(new AccountSealConnect(
+                            UUID.fromString(users.getString("user_uuid")),
+                            users.getString("user_name"),
+                            users.getString("user_discord_id"),
+                            users.getString("user_description")));
+                }
 
-            JsonHandler.getOrCreateJsonObject(dataFile, "connectedAccounts").toMap().forEach((uuid, discord) -> connectedAccounts.put(UUID.fromString(uuid), (String) discord));
-
-            JsonHandler.getOrCreateJsonObject(dataFile, "savedNames").toMap().forEach((uuid, name) -> savedNames.put(UUID.fromString(uuid), (String) name));
-
-            JSONArray array = JsonHandler.getOrCreateJsonArray(dataFile, "profileData");
-            for(int i = 0; i < array.length(); i++) {
-                try {
-                    JSONObject profileObject = array.getJSONObject(i);
-                    profileData.put(profileObject.getString("discordId"), new ProfileData(profileObject.optString("description", "")));
-                } catch(Exception ignored) {}
+                SealConnect.logger.info("Carregamento de dados concluido com sucesso!");
+                SealConnect.logger.info("Dados de " + connectedAccounts.size() + " contas foram carregados.");
+                return true;
             }
-
-            SealConnect.logger.info("Carregamento de dados concluido com sucesso!");
-            SealConnect.logger.info("Dados de " + connectedAccounts.size() + " contas foram carregados.");
-        } catch(Exception e) {
+        } catch(SQLException e) {
             e.printStackTrace();
+        } finally {
+            handler.disconnect();
+        }
+
+        SealConnect.logger.severe("O plugin será desligado devido aos erros com o banco de dados.");
+        return false;
+    }
+
+    public static void addUser(UUID uuid, String discord, String description, String name) {
+        if(handler.insertUser(uuid, discord, description, name)) {
+            connectedAccounts.add(new AccountSealConnect(uuid, name, discord, description));
         }
     }
 
-    public static void save() {
-        executor.submit(() -> {
-            try {
-                JSONObject json = new JSONObject();
+    public static void removeUser(AccountSealConnect account) {
+        if(handler.deleteUser(account.getUuid())) {
+            if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
+                if(DiscordSealConnect.jda.getGuilds().size() > 0) {
+                    Guild guild = DiscordSealConnect.jda.getGuilds().get(0);
 
-                JSONObject accounts = new JSONObject();
-                connectedAccounts.forEach((uuid, discord) -> accounts.put(uuid.toString(), discord));
-                json.put("connectedAccounts", accounts);
+                    guild.retrieveMemberById(account.getDiscord()).queue(member -> {
+                        config.linkedRoles.forEach((perm, role) -> {
+                            Role rl = guild.getRoleById(role);
+                            if (rl == null) return;
+                            if (member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
+                        });
 
-                JSONObject names = new JSONObject();
-                savedNames.forEach((uuid, name) -> names.put(uuid.toString(), name));
-                json.put("savedNames", names);
-
-                JSONArray profiles = new JSONArray();
-                profileData.forEach((discord, data) -> {
-                    JSONObject profile = new JSONObject();
-                    profile.put("discordId", discord);
-                    profile.put("description", data.getDescription().isEmpty() ? "" : data.getDescription());
-                    profiles.put(profile);
-                });
-                json.put("profileData", profiles);
-
-                JsonHandler.saveToJson(dataFile, json);
-            } catch(Exception e) {
-                e.printStackTrace();
+                        if (!config.nitroRoleName.isEmpty()) {
+                            PermissionHandler.removeGroup(account.getUuid(), config.nitroRoleName);
+                        }
+                    }, ignored -> {});
+                }
             }
-        });
+
+            connectedAccounts.remove(account);
+        }
     }
 
-    public static Map.Entry<UUID, String> getKey(String key) {
-        for (Map.Entry<UUID, String> entry : keys.entrySet()) {
-            if (entry.getValue().equalsIgnoreCase(key)) return entry;
+    public static KeySealConnect getKey(String key) {
+        for (KeySealConnect sealKey : keys) {
+            if (sealKey.getKey().equalsIgnoreCase(key)) return sealKey;
         }
         return null;
     }
 
-    public static Map.Entry<UUID, String> getConnectedAccountFromDiscordID(String id) {
-        for(Map.Entry<UUID, String> entry : connectedAccounts.entrySet()) {
-            if(entry.getValue().equalsIgnoreCase(id)) {
-                return entry;
-            }
+    public static KeySealConnect getKey(UUID uuid) {
+        for (KeySealConnect sealKey : keys) {
+            if (sealKey.getUuid().equals(uuid)) return sealKey;
         }
         return null;
     }
 
-    public static Map.Entry<UUID, String> getConnectedAccountFromUUID(UUID id) {
-        for(Map.Entry<UUID, String> entry : connectedAccounts.entrySet()) {
-            if(entry.getKey().equals(id)) {
-                return entry;
-            }
-        }
-        return null;
-    }
-
-    public static Map.Entry<UUID, String> getConnectedAccountFromName(String name) {
-        for(Map.Entry<UUID, String> entry : savedNames.entrySet()) {
-            if(entry.getValue().equalsIgnoreCase(name)) {
-                return getConnectedAccountFromUUID(entry.getKey());
+    public static AccountSealConnect getConnectedAccountFromDiscordID(String id) {
+        for(AccountSealConnect account : connectedAccounts) {
+            if(account.getDiscord().equalsIgnoreCase(id)) {
+                return account;
             }
         }
         return null;
     }
 
-    public static ProfileData getProfileData(String id) {
-        if(!profileData.containsKey(id)) profileData.put(id, new ProfileData(""));
-        return profileData.get(id);
+    public static AccountSealConnect getConnectedAccountFromUUID(UUID id) {
+        for(AccountSealConnect account : connectedAccounts) {
+            if(account.getUuid().equals(id)) {
+                return account;
+            }
+        }
+        return null;
     }
 
-    public static Map.Entry<UUID, String> getConnectedAccountFromAny(String any) {
-        Map.Entry<UUID, String> account;
+    public static AccountSealConnect getConnectedAccountFromName(String name) {
+        for(AccountSealConnect account : connectedAccounts) {
+            if(account.getName().equalsIgnoreCase(name)) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+    public static AccountSealConnect getConnectedAccountFromAny(String any) {
+        AccountSealConnect account;
         if((account = getConnectedAccountFromDiscordID(any)) != null) return account;
         else if ((account = getConnectedAccountFromName(any)) != null) return account;
         else {

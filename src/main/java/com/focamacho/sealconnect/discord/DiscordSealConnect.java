@@ -1,6 +1,7 @@
 package com.focamacho.sealconnect.discord;
 
 import com.focamacho.sealconnect.SealConnect;
+import com.focamacho.sealconnect.data.AccountSealConnect;
 import com.focamacho.sealconnect.data.DataHandler;
 import com.focamacho.sealconnect.discord.command.*;
 import com.focamacho.sealconnect.discord.listener.CommandListener;
@@ -23,7 +24,7 @@ public class DiscordSealConnect {
     public static void init() {
         SealConnect.logger.info("Tentando conexão com o bot...");
         try {
-            jda = JDABuilder.createDefault(config.botToken).addEventListeners(new CommandListener(), new SuggestionListener()).build();
+            jda = JDABuilder.createDefault(config.botToken).addEventListeners(new CommandListener(), new SuggestionListener(), DisconnectCommand.waiter).build();
             SealConnect.logger.info("Conexão com o bot concluída com sucesso!");
         } catch(Exception e) {
             SealConnect.logger.severe("Um erro ocorreu ao tentar se conectar ao bot.");
@@ -38,18 +39,25 @@ public class DiscordSealConnect {
         new DescriptionCommand(config.descriptionAliases);
         new ServerCommand(config.serverAliases);
         new SuggestCommand(config.suggestAliases);
+        new DisconnectCommand(config.disconnectAliasesDiscord);
     }
 
     public static void updateRoles(ProxiedPlayer player) {
         if(PermissionHandler.hasPermission(player.getUniqueId(), "*")) return;
 
-        Guild guild = config.guildId.isEmpty() ? jda.getGuilds().get(0) : jda.getGuildById(config.guildId);
+        Guild guild = jda.getGuilds().get(0);
 
         if(guild == null) return;
 
-        if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
+        AccountSealConnect account;
+
+        if((account = DataHandler.getConnectedAccountFromUUID(player.getUniqueId())) != null) {
+            if(!account.getName().equalsIgnoreCase(player.getName())) {
+                account.setName(player.getName());
+            }
+
             if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
-                guild.retrieveMemberById(DataHandler.connectedAccounts.get(player.getUniqueId())).queue(member -> {
+                guild.retrieveMemberById(account.getDiscord()).queue(member -> {
                     config.linkedRoles.forEach((perm, role) -> {
                         Role rl = guild.getRoleById(role);
                         if (rl == null) return;

@@ -1,6 +1,7 @@
 package com.focamacho.sealconnect.util;
 
 import com.focamacho.sealconnect.config.SealConnectLang;
+import com.focamacho.sealconnect.discord.DiscordSealConnect;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -46,7 +47,9 @@ public class TextUtils {
         return text.replace("&", "§")
                 .replace("%discord%", config.discordUrl)
                 .replace("%botprefix%", config.botPrefix)
-                .replace("%suggestionschannel%", config.suggestionsChannel);
+                .replace("%suggestionschannel%", config.suggestionsChannel)
+                .replace("%guildname%", DiscordSealConnect.jda.getGuilds().size() > 0 ? DiscordSealConnect.jda.getGuilds().get(0).getName() : "")
+                .replace("%disconnectconfirm%", config.disconnectConfirm);
     }
 
     public static String getString(String text, ProxiedPlayer player) {
