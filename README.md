@@ -33,7 +33,7 @@ Conectando a conta no Discord:
 
 Comando !minecraft para visualizar o perfil:
 
-<img src="https://i.imgur.com/P5TlqTB.png">
+<img src="https://i.imgur.com/MPFmf49.png">
 
 Sistema de sugestões:
 
