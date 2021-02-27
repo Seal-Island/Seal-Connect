@@ -16,7 +16,7 @@ import static com.focamacho.sealconnect.SealConnect.config;
 
 public class DataHandler {
 
-    public static final SQLiteHandler handler = new SQLiteHandler();
+    public static final DatabaseConnector handler = new DatabaseConnector();
 
     public static List<AccountSealConnect> connectedAccounts = new ArrayList<>();
     public static List<KeySealConnect> keys = new ArrayList<>();
@@ -34,7 +34,7 @@ public class DataHandler {
                     connectedAccounts.add(new AccountSealConnect(
                             UUID.fromString(users.getString("user_uuid")),
                             users.getString("user_name"),
-                            users.getString("user_discord_id"),
+                            String.valueOf(users.getLong("user_discord_id")),
                             users.getString("user_description")));
                 }
 

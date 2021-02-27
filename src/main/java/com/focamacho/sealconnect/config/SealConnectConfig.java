@@ -1,5 +1,6 @@
 package com.focamacho.sealconnect.config;
 
+import com.focamacho.sealconfig.ConfigObject;
 import com.focamacho.sealconfig.relocated.blue.endless.jankson.Comment;
 
 import java.util.HashMap;
@@ -86,5 +87,35 @@ public class SealConnectConfig {
 
     @Comment("Os aliases usados para o comando !desconectar do bot.")
     public String[] disconnectAliasesDiscord = {"desconectar", "disconnect"};
+
+    @ConfigObject
+    @Comment("Configuração do MySQL.")
+    public MySQL mysql = new MySQL();
+
+    public static class MySQL {
+
+        @Comment("Ativar o MySQL. Caso false o Seal Connect irá usar o SQLite (Banco de Dados por arquivo local).")
+        public boolean enableMysql = false;
+
+        @Comment("Informações para conexão com o MySQL")
+        public String mysqlAddress = "localhost:3306";
+        public String mysqlDatabase = "sealconnect";
+        public String mysqlUser = "sealconnect";
+        public String mysqlPassword = "";
+
+        @ConfigObject
+        @Comment("Configurações avançadas.")
+        public Advanced advanced = new Advanced();
+
+        public static class Advanced {
+
+            @Comment("Endereço de conexão customizado para o MySQL.\n" +
+                    "Esse valor irá substituir o endereço de ip do banco de dados.\n" +
+                    "Somente altere esse valor se você souber o que está fazendo.")
+            public String mysqlConnectionUrl = "";
+
+        }
+
+    }
 
 }

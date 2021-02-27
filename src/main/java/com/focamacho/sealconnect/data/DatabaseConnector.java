@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.UUID;
 
+import static com.focamacho.sealconnect.SealConnect.config;
+
 @SuppressWarnings("unused")
-public class SQLiteHandler {
+public class DatabaseConnector {
 
     private final File dataFile = new File("./plugins/SealConnect/db_sealconnect.db");
 
@@ -16,32 +18,33 @@ public class SQLiteHandler {
 
     {
         try {
-            Class.forName("org.sqlite.JDBC");
+            if(config.mysql.enableMysql) Class.forName("com.mysql.jdbc.Driver");
+            else Class.forName("org.sqlite.JDBC");
         } catch (Exception ignored) {}
 
         //Criar arquivo de DB caso não exista
-        if(!dataFile.exists()) {
+        if(!config.mysql.enableMysql && !dataFile.exists()) {
             try {
                 boolean mkdirs = dataFile.getParentFile().mkdirs();
                 boolean nf = dataFile.createNewFile();
-
-                if(connect()) {
-                    try {
-                        //Tabela de usuários
-                        String sql = "CREATE TABLE IF NOT EXISTS tbl_accounts (" +
-                                "user_uuid STRING PRIMARY KEY NOT NULL," +
-                                "user_discord_id STRING NOT NULL," +
-                                "user_description STRING," +
-                                "user_name STRING NOT NULL" +
-                                ");";
-                        connection.createStatement().execute(sql);
-                    } catch (SQLException e) {
-                        SealConnect.logger.severe("Ocorreu um erro ao tentar criar as tabelas no banco de dados.");
-                        e.printStackTrace();
-                    }
-                }
             } catch (IOException e) {
                 SealConnect.logger.severe("Não foi possível criar o arquivo para o banco de dados do Seal Connect.");
+                e.printStackTrace();
+            }
+        }
+
+        if(connect()) {
+            try {
+                //Tabela de usuários
+                String sql = "CREATE TABLE IF NOT EXISTS sealconnect_accounts (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "user_uuid VARCHAR(36) NOT NULL," +
+                        "user_discord_id LONG NOT NULL," +
+                        "user_description VARCHAR(180)," +
+                        "user_name VARCHAR(16) NOT NULL);";
+                connection.createStatement().execute(sql);
+            } catch (SQLException e) {
+                SealConnect.logger.severe("Ocorreu um erro ao tentar criar as tabelas no banco de dados.");
                 e.printStackTrace();
             } finally {
                 disconnect();
@@ -53,7 +56,13 @@ public class SQLiteHandler {
     public boolean connect() {
         try {
             if(connection != null && !connection.isClosed()) return true;
-            connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
+            if(config.mysql.enableMysql) {
+                String databaseUrl = "jdbc:mysql://" + config.mysql.mysqlAddress + "/" + config.mysql.mysqlDatabase;
+                if(!config.mysql.advanced.mysqlConnectionUrl.isEmpty()) databaseUrl = config.mysql.advanced.mysqlConnectionUrl;
+                connection = DriverManager.getConnection(databaseUrl, config.mysql.mysqlUser, config.mysql.mysqlPassword);
+            } else {
+                connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
+            }
             return true;
         } catch (SQLException e) {
             SealConnect.logger.severe("Ocorreu um erro ao tentar se conectar ao banco de dados.");
@@ -74,7 +83,7 @@ public class SQLiteHandler {
     }
 
     public boolean insertUser(UUID uuid, String discordId, String description, String name) {
-        String sql = "INSERT INTO tbl_accounts(" +
+        String sql = "INSERT INTO sealconnect_accounts(" +
                 "user_uuid," +
                 "user_discord_id," +
                 "user_description," +
@@ -86,7 +95,7 @@ public class SQLiteHandler {
                 PreparedStatement statement = connection.prepareStatement(sql);
 
                 statement.setString(1, uuid.toString());
-                statement.setString(2, discordId);
+                statement.setLong(2, Long.parseLong(discordId));
                 statement.setString(3, description);
                 statement.setString(4, name);
 
@@ -104,7 +113,7 @@ public class SQLiteHandler {
     }
 
     public boolean deleteUser(UUID uuid) {
-        String sql = "DELETE FROM tbl_accounts " +
+        String sql = "DELETE FROM sealconnect_accounts " +
                 "WHERE user_uuid = ?;";
 
         try {
@@ -125,7 +134,7 @@ public class SQLiteHandler {
     }
 
     public void updateName(UUID uuid, String name) {
-        String sql = "UPDATE tbl_accounts " +
+        String sql = "UPDATE sealconnect_accounts " +
                      "SET user_name = ? " +
                      "WHERE user_uuid = ?;";
 
@@ -147,7 +156,7 @@ public class SQLiteHandler {
     }
 
     public void updateDescription(UUID uuid, String description) {
-        String sql = "UPDATE tbl_accounts " +
+        String sql = "UPDATE sealconnect_accounts " +
                 "SET user_description = ? " +
                 "WHERE user_uuid = ?;";
 
@@ -170,7 +179,7 @@ public class SQLiteHandler {
 
     public ResultSet getAllUsers() {
         try {
-            if(connect()) return connection.createStatement().executeQuery("SELECT * FROM tbl_accounts");
+            if(connect()) return connection.createStatement().executeQuery("SELECT * FROM sealconnect_accounts");
             return null;
         } catch(SQLException e) {
             SealConnect.logger.severe("Ocorreu um erro ao tentar obter os usuário no banco de dados.");
