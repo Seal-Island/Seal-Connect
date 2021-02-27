@@ -25,16 +25,16 @@ Obs: O plugin de permissões precisa estar instalado no BungeeCord. [LuckPerms](
 # Imagens
 Comando /discord dentro do jogo:
 
-<img src="https://i.imgur.com/1gKSikh.png">
+<img src="https://i.imgur.com/gFPdmRI.png">
 
 Conectando a conta no Discord:
 
-<img src="https://i.imgur.com/nPjSlxj.png">
+<img src="https://i.imgur.com/MwOMhGQ.png">
 
 Comando !minecraft para visualizar o perfil:
 
-<img src="https://i.imgur.com/yxm3gM6.png">
+<img src="https://i.imgur.com/P5TlqTB.png">
 
 Sistema de sugestões:
 
-<img src="https://i.imgur.com/OiSY82q.png">
+<img src="https://i.imgur.com/5Gb87IN.png">
