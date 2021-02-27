@@ -26,7 +26,7 @@ public class DiscordCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(!(sender instanceof ProxiedPlayer) && args.length == 0) {
+        if(!(sender instanceof ProxiedPlayer)) {
             TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.only.players"));
             return;
         }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class SQLiteHandler {
 
     private final File dataFile = new File("./plugins/SealConnect/db_sealconnect.db");
