@@ -88,12 +88,12 @@ public class DisconnectCommand extends Command {
             else msg.addReaction(Emojis.animatedCross).queue();
 
             waiter.waitForEvent(GuildMessageReactionAddEvent.class, event -> {
-                String emoji = event.getReactionEmote().getEmoji();
+                String emoji = event.getReactionEmote().isEmoji() ? event.getReactionEmote().getEmoji() : event.getReactionEmote().getEmote().getName();
                 String check = Emojis.animatedCheckmark == null ? "✅" : Emojis.animatedCheckmark.getName();
                 String cross = Emojis.animatedCross == null ? "❌" : Emojis.animatedCross.getName();
                 return (emoji.equalsIgnoreCase(check) || emoji.equalsIgnoreCase(cross)) && event.getUser().getId().equalsIgnoreCase(message.getAuthor().getId());
             }, event -> {
-                String emoji = event.getReactionEmote().getEmoji();
+                String emoji = event.getReactionEmote().isEmoji() ? event.getReactionEmote().getEmoji() : event.getReactionEmote().getEmote().getName();
                 String check = Emojis.animatedCheckmark == null ? "✅" : Emojis.animatedCheckmark.getName();
                 String cross = Emojis.animatedCross == null ? "❌" : Emojis.animatedCross.getName();
                 if(emoji.equalsIgnoreCase(check)) {
