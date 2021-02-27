@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
-    compileOnly files('../Seal Library/seallibrary-common/build/libs/SealLibrary-Common-1.0.jar')
+    compileOnly 'com.focamacho:seallibrary:1.1:common'
 
     compileOnly group: 'org.json', name: 'json', version: '20200518'
     compileOnly group: 'commons-io', name: 'commons-io', version: '2.7'
