@@ -25,7 +25,7 @@ Obs: O plugin de permissões precisa estar instalado no BungeeCord. [LuckPerms](
 # Imagens
 Comando /discord dentro do jogo:
 
-<img src="https://i.imgur.com/gFPdmRI.png">
+<img src="https://i.imgur.com/TtCz4Rj.png">
 
 Conectando a conta no Discord:
 
