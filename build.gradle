@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'java'
 
 group = 'com.focamacho'
-version = '1.0'
+version = '1.0.1'
 archivesBaseName = 'SealConnect'
 
 sourceCompatibility = '1.8'
