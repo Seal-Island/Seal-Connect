@@ -61,16 +61,18 @@ public class DisconnectCommand extends Command {
             return;
         }
 
-        if(!PermissionHandler.hasPermission(connectedAccount.getUuid(), "sealconnect.disconnect.self") && (message.getMember() == null || !message.getMember().hasPermission(Permission.ADMINISTRATOR))) {
-            message.reply(new EmbedBuilder()
-                    .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.error.title")))
-                    .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.error.description")))
-                    .setThumbnail(TextUtils.getString(config.erroredImage))
-                    .build()).queue();
-            return;
-        }
+        PermissionHandler.hasPermission(connectedAccount.getUuid(), "sealconnect.disconnect.self").whenComplete((hasPerm , throwable) -> {
+            if(!hasPerm && (message.getMember() == null || !message.getMember().hasPermission(Permission.ADMINISTRATOR))) {
+                message.reply(new EmbedBuilder()
+                        .setTitle(TextUtils.getString(SealConnectLang.getLang("discord.error.title")))
+                        .setDescription(TextUtils.getString(SealConnectLang.getLang("discord.error.description")))
+                        .setThumbnail(TextUtils.getString(config.erroredImage))
+                        .build()).queue();
+                return;
+            }
 
-        sendDisconnectMessage(message, connectedAccount);
+            sendDisconnectMessage(message, connectedAccount);
+        });
     }
 
     private void sendDisconnectMessage(Message message, AccountSealConnect connectedAccount) {

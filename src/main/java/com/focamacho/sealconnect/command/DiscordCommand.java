@@ -32,20 +32,22 @@ public class DiscordCommand extends Command {
         }
 
         ProxiedPlayer player = (ProxiedPlayer) sender;
-        if(!PermissionHandler.hasPermission(player.getUniqueId(), "sealconnect.discord")) {
-            TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.no.permission"));
-            return;
-        }
+        PermissionHandler.hasPermission(player.getUniqueId(), "sealconnect.discord").whenComplete((hasPerm, throwable) -> {
+            if(!hasPerm) {
+                TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.no.permission"));
+                return;
+            }
 
-        if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
-            TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.already.connected"));
-            return;
-        }
+            if(DataHandler.getConnectedAccountFromUUID(player.getUniqueId()) != null) {
+                TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.already.connected"));
+                return;
+            }
 
-        KeySealConnect keySeal = DataHandler.getKey(player.getUniqueId());
-        if(keySeal == null) keySeal = genNewKey(player.getUniqueId(), player.getName());
+            KeySealConnect keySeal = DataHandler.getKey(player.getUniqueId());
+            if(keySeal == null) keySeal = genNewKey(player.getUniqueId(), player.getName());
 
-        TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.key").replace("%key%", keySeal.getKey()), player);
+            TextUtils.sendMessage(sender, SealConnectLang.getLang("minecraft.key").replace("%key%", keySeal.getKey()), player);
+        });
     }
 
     private KeySealConnect genNewKey(UUID uuid, String name) {

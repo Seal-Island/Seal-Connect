@@ -56,30 +56,34 @@ public class DiscordSealConnect {
 
             account.setLastLogin(System.currentTimeMillis());
 
-            if(PermissionHandler.hasPermission(player.getUniqueId(), "*")) return;
+            PermissionHandler.hasPermission(player.getUniqueId(), "*").whenComplete((hasPerm, throwable) -> {
+                if(hasPerm) return;
 
-            if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
-                guild.retrieveMemberById(account.getDiscord()).queue(member -> {
-                    config.linkedRoles.forEach((perm, role) -> {
-                        Role rl = guild.getRoleById(role);
-                        if (rl == null) return;
+                if(!config.nitroRoleName.isEmpty() || config.linkedRoles.size() > 0) {
+                    guild.retrieveMemberById(account.getDiscord()).queue(member -> {
+                        config.linkedRoles.forEach((perm, role) -> {
+                            Role rl = guild.getRoleById(role);
+                            if (rl == null) return;
 
-                        if(PermissionHandler.hasPermission(player.getUniqueId(), perm)) {
-                            if(!member.getRoles().contains(rl)) guild.addRoleToMember(member, rl).queue();
-                        } else {
-                            if(member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
+                            PermissionHandler.hasPermission(player.getUniqueId(), perm).whenComplete((hasPerm2, throwable2) -> {
+                                if(hasPerm2) {
+                                    if(!member.getRoles().contains(rl)) guild.addRoleToMember(member, rl).queue();
+                                } else {
+                                    if(member.getRoles().contains(rl)) guild.removeRoleFromMember(member, rl).queue();
+                                }
+                            });
+                        });
+
+                        if(!config.nitroRoleName.isEmpty()) {
+                            if(member.getTimeBoosted() != null) {
+                                PermissionHandler.addGroup(player.getUniqueId(), config.nitroRoleName);
+                            } else {
+                                PermissionHandler.removeGroup(player.getUniqueId(), config.nitroRoleName);
+                            }
                         }
-                    });
-
-                    if(!config.nitroRoleName.isEmpty()) {
-                        if(member.getTimeBoosted() != null) {
-                            PermissionHandler.addGroup(player.getUniqueId(), config.nitroRoleName);
-                        } else {
-                            PermissionHandler.removeGroup(player.getUniqueId(), config.nitroRoleName);
-                        }
-                    }
-                }, ignored -> {});
-            }
+                    }, ignored -> {});
+                }
+            });
         }
     }
 
