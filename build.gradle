@@ -35,7 +35,7 @@ dependencies {
 
     compile("ch.qos.logback:logback-classic:1.2.3")
 
-    compile ('net.dv8tion:JDA:4.2.0_227') {
+    compile ('net.dv8tion:JDA:4.2.0_247') {
         exclude module: 'opus-java'
     }
     compile 'com.jagrosh:jda-utilities:3.0.5'
